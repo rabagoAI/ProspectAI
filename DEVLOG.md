@@ -79,3 +79,28 @@
 
 **Errores encontrados y solución:**
 - Ninguno en esta fase
+
+---
+
+### [2026-04-21] — Fase: Despliegue Railway (en progreso)
+
+**Completado:**
+- `database.py` adaptado para SQLite (local) y PostgreSQL (producción) sin cambios en el resto del código
+- Conversión automática de `postgresql://` → `postgresql+psycopg2://` (Railway inyecta el prefijo antiguo)
+- `psycopg2-binary==2.9.9` añadido a `requirements.txt`
+- `.gitignore` creado: excluye `venv/`, `node_modules/`, `*.db`, `.env`, `__pycache__`, `dist/`
+- Repo subido a GitHub y conectado a Railway
+- Plugin PostgreSQL añadido en Railway (`DATABASE_URL` inyectada automáticamente)
+
+**Decisiones técnicas:**
+- `psycopg2-binary` en lugar de `psycopg2` puro para evitar compilación en Railway (no requiere libpq-dev)
+- La detección SQLite/PostgreSQL se hace en `database.py` antes de crear el engine, sin condicionales en el resto del código
+
+**Pendiente para mañana:**
+- Confirmar que el deploy de Railway arranca sin errores
+- Añadir variables de entorno en Railway: `RESEND_API_KEY`, `FROM_EMAIL`, `FROM_NAME`, `FRONTEND_URL`
+- Desplegar frontend en Vercel apuntando a la URL de Railway
+- Verificar dominio en Resend
+
+**Errores encontrados y solución:**
+- Ninguno en esta fase

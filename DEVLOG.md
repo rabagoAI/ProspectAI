@@ -82,7 +82,7 @@
 
 ---
 
-### [2026-04-21] — Fase: Despliegue Railway (en progreso)
+### [2026-04-21] — Fase: Despliegue Railway
 
 **Completado:**
 - `database.py` adaptado para SQLite (local) y PostgreSQL (producción) sin cambios en el resto del código
@@ -96,11 +96,34 @@
 - `psycopg2-binary` en lugar de `psycopg2` puro para evitar compilación en Railway (no requiere libpq-dev)
 - La detección SQLite/PostgreSQL se hace en `database.py` antes de crear el engine, sin condicionales en el resto del código
 
-**Pendiente para mañana:**
-- Confirmar que el deploy de Railway arranca sin errores
-- Añadir variables de entorno en Railway: `RESEND_API_KEY`, `FROM_EMAIL`, `FROM_NAME`, `FRONTEND_URL`
-- Desplegar frontend en Vercel apuntando a la URL de Railway
-- Verificar dominio en Resend
-
 **Errores encontrados y solución:**
 - Ninguno en esta fase
+
+---
+
+### [2026-04-22] — Fase: Despliegue Vercel + puesta en producción
+
+**Completado:**
+- Backend confirmado funcionando en Railway: `https://prospectai-production-1ff5.up.railway.app`
+- `vercel.json` corregido: eliminada referencia a secreto `@prospectai_api_url` que no existía y bloqueaba el deploy
+- Frontend desplegado en Vercel: `https://prospectai-rabagoai.vercel.app`
+- Variable `VITE_API_URL` añadida en Vercel apuntando al backend de Railway
+- Variable `FRONTEND_URL` añadida en Railway para permitir CORS desde Vercel
+- Seed ejecutado contra PostgreSQL de Railway — 5 prospectos de demo cargados en producción
+- `instrucciones.md` creado con comandos exactos para arrancar el proyecto en local
+
+**Decisiones técnicas:**
+- La variable `VITE_API_URL` se gestiona desde el panel de Vercel, no desde `vercel.json`, para evitar dependencia de secretos de Vercel
+- El seed se ejecutó localmente apuntando a Railway vía `DATABASE_URL` en el comando, sin modificar `.env`
+
+**Errores encontrados y solución:**
+- Error CORS al cargar la app: faltaba `FRONTEND_URL` en Railway → añadida y resuelto
+- Error deploy Vercel "Secret does not exist": `vercel.json` referenciaba `@prospectai_api_url` → eliminada esa sección del json
+
+**Pendiente (próxima sesión):**
+- Dominio propio + verificación en Resend → para enviar emails reales
+- Sustituir prospectos de demo por prospectos reales
+- Filtro por servicio de interés en el kanban
+- Paginación en el kanban
+- Webhook de Resend para tracking de emails (abierto/respondido/rebotado)
+- Modo oscuro
